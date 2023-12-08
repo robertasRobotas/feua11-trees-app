@@ -1,39 +1,33 @@
+import TreeModel from "../models/tree.js";
+
 let trees = [
   { id: "xxxxxx", specie: "Azuolas", unit: 30 },
   { id: "yyyyyy", specie: "Berzas", unit: 15 },
   { id: "zzzzzz", specie: "Elgle", unit: 200 },
 ];
 
-const GET_TREES = (req, res) => {
+const GET_TREES = async (req, res) => {
+  const trees = await TreeModel.find();
   return res.status(200).json({ trees: trees });
 };
 
-const GET_TREES_BY_ID = (req, res) => {
-  const tree = trees.find((t) => t.id === Number(req.params.id));
-
-  if (tree) {
-    return res.status(200).json({ tree: tree });
-  }
-
-  return res
-    .status(404)
-    .json({ message: `Tree with id ${req.params.id} does not exists` });
+const GET_TREES_BY_ID = async (req, res) => {
+  const trees = await TreeModel.findOne({ _id: req.params.id });
+  return res.status(200).json({ trees: trees });
 };
 
-const ADD_TREE = (req, res) => {
-  if (!req.body.specie || !req.body.unit) {
-    return res.status(400).json({ message: "Please add all required data" });
-  }
+const ADD_TREE = async (req, res) => {
+  const tree = new TreeModel({
+    specie: req.body.specie,
+    unit: req.body.unit,
+    unitPrice: req.body.unitPrice,
+  });
 
-  const isTreeExists = trees.some((tree) => tree.specie === req.body.specie);
+  const response = await tree.save();
 
-  if (isTreeExists) {
-    return res.status(400).json({ message: "this tree already exists" });
-  }
-
-  const tree = { specie: req.body.specie, unit: req.body.unit };
-  trees.push(tree);
-  return res.status(200).json({ tree: tree });
+  return res
+    .status(201)
+    .json({ tree: response, message: "Tree added successfully" });
 };
 
 const UPDATE_TREE = (req, res) => {
