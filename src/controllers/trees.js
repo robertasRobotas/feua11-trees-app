@@ -1,7 +1,7 @@
-const trees = [
-  { id: 1, specie: "Azuolas", unit: 30 },
-  { id: 2, specie: "Berzas", unit: 15 },
-  { id: 3, specie: "Elgle", unit: 200 },
+let trees = [
+  { id: "xxxxxx", specie: "Azuolas", unit: 30 },
+  { id: "yyyyyy", specie: "Berzas", unit: 15 },
+  { id: "zzzzzz", specie: "Elgle", unit: 200 },
 ];
 
 const GET_TREES = (req, res) => {
@@ -36,4 +36,32 @@ const ADD_TREE = (req, res) => {
   return res.status(200).json({ tree: tree });
 };
 
-module.exports = { GET_TREES, GET_TREES_BY_ID, ADD_TREE };
+const UPDATE_TREE = (req, res) => {
+  const index = trees.findIndex((tree) => {
+    return tree.id === req.params.id;
+  });
+
+  if (index === -1) {
+    return res
+      .status(400)
+      .json({ message: `tree with id ${req.params.id} does not exist` });
+  }
+
+  trees[index] = { ...trees[index], ...req.body };
+
+  return res.status(200).json({ trees: trees[index] });
+};
+
+const DELETE_TREE = (req, res) => {
+  console.log(req.params.id);
+
+  const filteredTrees = trees.filter((tree) => {
+    return tree.id !== req.params.id;
+  });
+
+  trees = filteredTrees;
+
+  return res.status(200).json({ trees: trees });
+};
+
+export { GET_TREES, GET_TREES_BY_ID, ADD_TREE, UPDATE_TREE, DELETE_TREE };

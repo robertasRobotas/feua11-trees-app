@@ -1,6 +1,7 @@
-const express = require("express");
+import express from "express";
+import treesRouter from "./src/routes/trees.js";
+
 const app = express();
-const treesRouter = require("./src/routes/trees");
 
 app.use(express.json());
 
