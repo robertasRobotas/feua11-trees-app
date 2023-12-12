@@ -53,16 +53,17 @@ const UPDATE_TREE = async (req, res) => {
   }
 };
 
-// const DELETE_TREE = (req, res) => {
-//   console.log(req.params.id);
+const DELETE_TREE = async (req, res) => {
+  try {
+    const response = await TreeModel.findByIdAndDelete(req.params.id);
 
-//   const filteredTrees = trees.filter((tree) => {
-//     return tree.id !== req.params.id;
-//   });
+    return res
+      .status(200)
+      .json({ response: response, message: "your tree was deleted" });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Something happened" });
+  }
+};
 
-//   trees = filteredTrees;
-
-//   return res.status(200).json({ trees: trees });
-// };
-
-export { GET_TREES, GET_TREES_BY_ID, ADD_TREE, UPDATE_TREE };
+export { GET_TREES, GET_TREES_BY_ID, ADD_TREE, UPDATE_TREE, DELETE_TREE };
